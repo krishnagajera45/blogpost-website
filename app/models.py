@@ -16,3 +16,16 @@ class User(Base):
 
     def __repr__(self):
         return f"<User(id={self.id}, name={self.name}, email={self.email})>"
+
+
+# Contact US model
+class ContactMessage(Base):
+    __tablename__ = 'contact_messages'
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    phone = Column(String, nullable=True)
+    message = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+

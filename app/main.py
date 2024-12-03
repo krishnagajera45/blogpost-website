@@ -158,6 +158,6 @@ def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-# @app.get("/")
-# def read_root():
-#     return {"message": "Welcome to the WordEcho - Blogging web application!"}
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to the WordEcho - Blogging web application!"}
