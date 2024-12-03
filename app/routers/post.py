@@ -27,3 +27,14 @@ def update_blog(blog_id: int, blog: schemas.BlogCreate, db: Session = Depends(de
         raise HTTPException(status_code=404, detail="Blog not found or you don't have permission to update it")
     return updated_blog
 
+@router.get("/blogs/{blog_id}/comments/", response_model=list[schemas.Comment])
+def read_comments_for_blog(blog_id: int, db: Session = Depends(dependencies.get_db)):
+    comments = crud.get_comments_for_blog(db, blog_id=blog_id)
+    return comments
+
+@router.get("/comments/{comment_id}", response_model=schemas.Comment)
+def read_comment(comment_id: int, db: Session = Depends(dependencies.get_db)):
+    comment = crud.get_comment_by_id(db, comment_id=comment_id)
+    if comment is None:
+        raise HTTPException(status_code=404, detail="Comment not found")
+    return comment
