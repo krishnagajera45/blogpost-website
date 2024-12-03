@@ -23,13 +23,47 @@ def create_user(db: Session, user: UserCreate, oauth_provider="local"):
     db.commit()
     db.refresh(db_user)
     return db_user
+    
+def update_user(db: Session, user_id: int, user_update: UserUpdate):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if not db_user:
+        return None
+    if user_update.name:
+        db_user.name = user_update.name
+    if user_update.email:
+        db_user.email = user_update.email
+    db.commit()
+    return db_user
 
+def delete_user(db: Session, user_id: int):
+    db_user = db.query(User).filter(User.id == user_id).first()
+    if db_user:
+        db.delete(db_user)
+        db.commit()
+        return True
+    return False
+    
 def get_comments_for_blog(db: Session, blog_id: int):
     return db.query(models.Comment).filter(models.Comment.blog_id == blog_id).all()
 
 def get_comment_by_id(db: Session, comment_id: int):
     return db.query(models.Comment).filter(models.Comment.id == comment_id).first()
+    
+def get_blog_by_id(db: Session, blog_id: int):
+    return db.query(models.Blog).filter(models.Blog.id == blog_id).first()
 
+def get_blogs(db: Session, skip: int = 0, limit: int = 10):
+    return db.query(models.Blog).offset(skip).limit(limit).all()
+
+def update_blog(db: Session, blog_id: int, blog: schemas.BlogCreate, user_id: int):
+    db_blog = db.query(models.Blog).filter(models.Blog.id == blog_id, models.Blog.user_id == user_id).first()
+    if db_blog:
+        db_blog.title = blog.title
+        db_blog.content = blog.content
+        db.commit()
+        db.refresh(db_blog)
+        return db_blog
+    return None
 
 def create_contact_message(db: Session, contact: schemas.ContactCreate):
     db_contact = models.ContactMessage(
